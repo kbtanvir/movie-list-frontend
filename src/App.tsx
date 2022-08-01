@@ -5,7 +5,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import AuthForm from "./features/auth/view/forms/AuthForm";
+import FormLogin from "./features/auth/view/forms/AuthForm";
 import FormPasswordPreset from "./features/auth/view/forms/PasswordReset";
 import MoviesView from "./features/movies/view/MoviesView";
 import "./global.css";
@@ -30,8 +30,8 @@ export default function App() {
 
           {/* * AUTH ROUTES */}
 
-          <Route path={AppRoutes.login} element={<AuthForm />} />
-          <Route path={AppRoutes.register} element={<AuthForm register />} />
+          <Route path={AppRoutes.login} element={<FormLogin />} />
+          <Route path={AppRoutes.register} element={<FormLogin register />} />
           <Route
             path={AppRoutes.passwordReset}
             element={<FormPasswordPreset />}

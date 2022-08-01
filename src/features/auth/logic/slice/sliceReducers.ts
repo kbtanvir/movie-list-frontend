@@ -1,4 +1,4 @@
-import { Auth } from '../../models/types/Auth'
+import { Auth } from '../../data/types/Auth'
 
 export const reducers = {
   setUser: (state: Auth.State, { payload }: { payload: Auth.User | null }) => {

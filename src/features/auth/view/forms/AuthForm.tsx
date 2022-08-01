@@ -1,103 +1,77 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import * as yup from "yup";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AppRoutes } from "../../../../lib/consts/Routes";
-import { StateResponse } from "../../models/types/Auth";
+import useHookForm, { FormField } from "../../../../lib/hooks/useHookForm";
+import { loginForm, registrationForm } from "../../data/models/formFields";
 import ErrorMessageText from "./ErrorMessageText";
 
 export default function AuthForm({ ...props }: { register?: boolean }) {
   // const { response } = useSelector((state: RootState) => state.global)
   // const dispatch = useDispatch()
+  const navigate = useNavigate();
 
-  const [state, setState] = useState<StateResponse>({
-    status: "loaded",
-    message: "",
+  // * HOOK FORM CONFIG
+  // -------------------
+
+  const [formFields, setFormFields] = useState<FormField[]>([]);
+
+  const { errors, register, handleSubmit } = useHookForm({
+    formFields,
   });
 
-  const [show, setShow] = useState(false);
-  const handlePasswordShowHide = () => setShow(!show);
-
-  // useEffect(() => {
-  //   if (response) {
-  //     setState(response)
-  //   }
-  // }, [response])
-
-  const textFields = [
-    {
-      name: "email",
-      label: "Email",
-      placeholder: "Type your email",
-      fieldType: "email",
-      validation: () =>
-        yup
-          .string()
-          .email(`"Doesn't look like an email address" >_<`)
-          .required("Required"),
-    },
-    {
-      name: "password",
-      label: "Password",
-      fieldType: "password",
-      placeholder: "Type 8 digit passcode",
-      validation: () =>
-        yup.string().min(8, "Must be 8 digit long").required("Required"),
-    },
-  ];
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm({
-    mode: "onSubmit",
-    resolver: yupResolver(
-      yup.object(
-        textFields.reduce(
-          (acc, cur) => ({ ...acc, [cur.name]: cur.validation() }),
-          {}
-        )
-      )
-    ),
-  });
+  // * HANDLERS
+  // -------------
 
   const onSubmit = (data: any) => {
     if (props.register) {
-      return; // dispatch(registerWithEmailPassRequest(data.email, data.password))
+      // dispatch(registerWithEmailPassRequest(data.email, data.password))
     }
-    return; // dispatch(signInWithEmailPassRequest(data.email, data.password))
+    if (!props.register) {
+    }
+
+    navigate(AppRoutes.movies, { replace: true });
+
+    console.log(data);
+
+    // dispatch(signInWithEmailPassRequest(data.email, data.password))
     // console.log(data);
   };
+
+  // * EFFECTS
+  // -------------
+
+  useEffect(() => {
+    setFormFields(props.register ? registrationForm : loginForm);
+  }, [props.register]);
+
+  // * RENDER
+  // -------------
 
   return (
     <div>
       <h3>{props.register ? "Signup" : "Login"}</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {textFields.map(({ name, fieldType, label, placeholder }, i) => (
+        {formFields.map((field, i) => (
           <div key={i} className="w-full">
             <input
               autoComplete="on"
-              type={fieldType}
-              {...register(name)}
-              className="input w-full"
-              placeholder={placeholder}
+              type={field.type}
+              {...register(field.name)}
+              placeholder={field.placeholder}
             />
-            <ErrorMessageText errors={errors} name={name} />
+            <ErrorMessageText errors={errors} name={field.name} />
           </div>
         ))}
         <div>
-          <button type="submit">
-            {state.status === "loading" ? "Loading..." : "Sign in"}
-          </button>
+          <button type="submit">{props.register ? "Signup" : "Login"}</button>
+
           {props.register ? (
             <Link to={AppRoutes.login}>
               <span>Already have an account?</span>
             </Link>
           ) : (
             <Link to={AppRoutes.register}>
-              <span>Don't have an Account? Sign up</span>
+              <span>Don't have an Account?</span>
             </Link>
           )}
 

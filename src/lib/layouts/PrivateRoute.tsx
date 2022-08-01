@@ -17,7 +17,7 @@ const PrivateRoute = ({ element }: { element: JSX.Element }) => {
   //   dispatch(verifyJwt(jwt.token));
   // }, [jwt, isSuccess]);
 
-  return false ? element : <Navigate replace to={AppRoutes.login} />;
+  return true ? element : <Navigate replace to={AppRoutes.login} />;
 };
 
 export default PrivateRoute;

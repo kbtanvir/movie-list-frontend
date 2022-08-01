@@ -1,4 +1,4 @@
-import { Auth } from '../../models/types/Auth'
+import { Auth } from '../../data/types/Auth'
 
 export const initialState: Auth.State = {
   user: null,

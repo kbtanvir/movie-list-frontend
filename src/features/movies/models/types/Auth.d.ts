@@ -25,7 +25,4 @@ export namespace Auth {
   }
 }
 
-export interface StateResponse {
-  status?: 'loading' | 'loaded' | 'error'
-  message?: string
-}
+
