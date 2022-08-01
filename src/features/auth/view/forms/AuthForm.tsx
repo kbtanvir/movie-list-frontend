@@ -1,12 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { IoIosArrowBack } from "react-icons/io";
+import { Link } from "react-router-dom";
 import * as yup from "yup";
+import { AppRoutes } from "../../../../lib/consts/Routes";
 import { StateResponse } from "../../models/types/Auth";
 import ErrorMessageText from "./ErrorMessageText";
 
-export default function AuthForm() {
+export default function AuthForm({ ...props }: { register?: boolean }) {
   // const { response } = useSelector((state: RootState) => state.global)
   // const dispatch = useDispatch()
 
@@ -63,27 +64,17 @@ export default function AuthForm() {
   });
 
   const onSubmit = (data: any) => {
-    //    dispatch(signInWithEmailPassRequest(data.email, data.password))
-    console.log(data);
+    if (props.register) {
+      return; // dispatch(registerWithEmailPassRequest(data.email, data.password))
+    }
+    return; // dispatch(signInWithEmailPassRequest(data.email, data.password))
+    // console.log(data);
   };
 
   return (
-    <div className="flex-col-start w-full gap-7">
-      <p
-        className="flex flex-row items-center gap-2"
-        onClick={() =>
-          // todo: router.push("/auth/login")
-          false
-        }
-      >
-        <IoIosArrowBack /> Go Back
-      </p>
-
-      <h3 className="text-xl font-light">Log in with email</h3>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex-col-start w-full gap-5"
-      >
+    <div>
+      <h3>{props.register ? "Signup" : "Login"}</h3>
+      <form onSubmit={handleSubmit(onSubmit)}>
         {textFields.map(({ name, fieldType, label, placeholder }, i) => (
           <div key={i} className="w-full">
             <input
@@ -96,21 +87,23 @@ export default function AuthForm() {
             <ErrorMessageText errors={errors} name={name} />
           </div>
         ))}
-        <div className="flex w-full flex-col items-center justify-start gap-5 sm:flex-row">
-          <button
-            type="submit"
-            className="button button--contrast font-caveat text-xl sm:max-w-[200px] "
-          >
+        <div>
+          <button type="submit">
             {state.status === "loading" ? "Loading..." : "Sign in"}
           </button>
-          <p
-            onClick={() => {
-              // todo: router.push("/auth/login")
-              false;
-            }}
-          >
-            Forgot password?
-          </p>
+          {props.register ? (
+            <Link to={AppRoutes.login}>
+              <span>Already have an account?</span>
+            </Link>
+          ) : (
+            <Link to={AppRoutes.register}>
+              <span>Don't have an Account? Sign up</span>
+            </Link>
+          )}
+
+          <Link to={AppRoutes.passwordReset}>
+            <span>Forgot password?</span>
+          </Link>
         </div>
       </form>
     </div>

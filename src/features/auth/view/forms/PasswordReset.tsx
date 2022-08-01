@@ -2,7 +2,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoIosArrowBack } from "react-icons/io";
+import { Link } from "react-router-dom";
 import * as yup from "yup";
+import { AppRoutes } from "../../../../lib/consts/Routes";
 import { StateResponse } from "../../models/types/Auth";
 import ErrorMessageText from "./ErrorMessageText";
 
@@ -66,20 +68,17 @@ export default function FormPasswordPreset() {
   };
 
   return (
-    <div className="flex-col-start gap-7">
-      <p
-        className="flex flex-row items-center gap-2"
-        onClick={() => {
-          false
-        }}
-      >
-        <IoIosArrowBack /> Back to login
-      </p>
+    <div>
+      <Link to={AppRoutes.login}>
+        <span onClick={() => {}}>
+          <IoIosArrowBack /> Back to login
+        </span>
+      </Link>
 
       {state.status !== "loaded" ? (
-        <h3 className="text-xl font-light">Enter email to reset password </h3>
+        <h3>Enter email to reset password </h3>
       ) : (
-        <h3 className="text-xl font-light">
+        <h3>
           If an account exists for <span>email</span>, you will get an email
           with instructions on resetting your password. If it doesn&apos;t
           arrive, be sure to check your spam folder.
@@ -87,27 +86,20 @@ export default function FormPasswordPreset() {
       )}
 
       {state.status !== "loaded" && (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex-col-start w-full gap-5 lg:w-[440px]"
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           {formFields.map((field, i) => (
-            <div key={i} className="w-full">
+            <div key={i}>
               <input
                 autoComplete="on"
                 type={field.type}
                 {...register(field.name)}
-                className="input w-full"
                 placeholder={field.placeholder}
               />
               <ErrorMessageText errors={errors} name={field.name} />
             </div>
           ))}
-          <div className="flex items-center justify-start gap-5 sm:flex-row">
-            <button
-              type="submit"
-              className="button button--contrast min-w-fit  font-caveat text-xl  sm:w-full lg:min-w-[200px]"
-            >
+          <div>
+            <button type="submit">
               {state.status === "loading" ? "Loading..." : "Send reset link"}
             </button>
           </div>
