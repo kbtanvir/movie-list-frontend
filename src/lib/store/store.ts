@@ -1,5 +1,6 @@
 import { Action, configureStore, Store, ThunkAction } from "@reduxjs/toolkit";
-import { reducer } from "./rootReducer";
+import { useDispatch } from "react-redux";
+import { reducer } from "./root.reducer";
 
 // sync state to local storage
 // export function loadFromLocalStorage() {
@@ -24,7 +25,11 @@ export const store: Store = configureStore({
 });
 
 export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+
 
 export default store;
 

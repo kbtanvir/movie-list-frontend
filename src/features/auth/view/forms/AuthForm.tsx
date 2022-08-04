@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppRoutes } from "../../../../lib/consts/Routes";
 import useHookForm, { FormField } from "../../../../lib/hooks/useHookForm";
-import { loginForm, registrationForm } from "../../data/models/formFields";
+import { loginForm, registrationForm } from "../../data/formFields";
 import ErrorMessageText from "./ErrorMessageText";
 
 export default function AuthForm({ ...props }: { register?: boolean }) {

@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { FormField } from "../../../../lib/hooks/useHookForm";
+import { FormField } from "../../../lib/hooks/useHookForm";
 
  const registrationForm: FormField[] = [
   {

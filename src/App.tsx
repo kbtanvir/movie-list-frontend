@@ -1,10 +1,4 @@
-import { useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import FormLogin from "./features/auth/view/forms/AuthForm";
 import FormPasswordPreset from "./features/auth/view/forms/PasswordReset";
 import MoviesView from "./features/movies/view/MoviesView";
@@ -19,14 +13,9 @@ export default function App() {
         <Routes>
           {/* * PROTECTED ROUTES */}
 
-          <Route
-            path={AppRoutes.home}
-            element={<PrivateRoute element={<RootView />} />}
-          />
-          <Route
-            path={AppRoutes.movies}
-            element={<PrivateRoute element={<MoviesView />} />}
-          />
+          <Route element={<PrivateRoute />}>
+            <Route path={AppRoutes.movies} element={<MoviesView />} />
+          </Route>
 
           {/* * AUTH ROUTES */}
 
@@ -39,15 +28,15 @@ export default function App() {
 
           {/* * DEFAULT ROUTE */}
 
-          <Route path="*" element={<Navigate to={AppRoutes.home} />} />
+          <Route path="*" element={<PrivateRoute />}>
+            <Route index element={<ErrorView />} />
+          </Route>
         </Routes>
       </Router>
     </div>
   );
 }
 
-function RootView() {
-  useEffect(() => {}, []);
-
-  return <div>Loading</div>;
+function ErrorView() {
+  return <div>Page Not Found</div>;
 }

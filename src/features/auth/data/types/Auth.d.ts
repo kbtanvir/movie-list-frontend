@@ -1,29 +1,32 @@
 export interface StateResponse {
-  status?: 'loading' | 'loaded' | 'error'
-  message?: string
+  status?: "loading" | "loaded" | "error";
+  message?: string;
 }
 
-
 export namespace Auth {
-  export interface CurrentUser {
-    id: string
-    name: string
-    email: string
-    accessToken: string
-    refreshToken: string
+  enum AuthEnum {
+    user = "user",
+    IsAuthenticated = "isAuthenticated",
+    session = "session",
+  }
+
+  export interface session {
+    accessToken: string;
+    refreshToken: string;
+  }
+  export interface User {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    type: string;
+    exp: number;
+    iat: number;
   }
 
   export interface Selector {
-   user: CurrentUser | null   
-   response: NetworkResponse
+    [AuthEnum.user]: User | null;
+    [AuthEnum.IsAuthenticated]: boolean;
+    [AuthEnum.session]: session | null;
   }
-
-}
-
-
-
-export type NetworkResponse<T> = {
-  data?: T[] | T
-  status: "initial"| 'success' | 'error' | 'loading'
-  message?: string
 }

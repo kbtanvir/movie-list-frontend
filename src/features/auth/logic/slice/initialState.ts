@@ -1,9 +1,7 @@
-import { Auth } from '../../data/types/Auth'
+import { Auth } from "../../data/types/Auth";
 
-export const initialState: Auth.State = {
+export const initialState: Auth.Selector = {
   user: null,
-  // response: {
-  //   status: 'initial',
-  //   message: '',
-  // },
-}
+  isAuthenticated: false,
+
+};

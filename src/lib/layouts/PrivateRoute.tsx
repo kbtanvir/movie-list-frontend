@@ -1,23 +1,12 @@
-// import React, { useEffect } from 'react';
-import { Navigate } from "react-router-dom";
-import { AppRoutes } from "../consts/Routes";
-// import { useAppDispatch, useAppSelector } from '../../../hooks/redux/hooks';
-// import { verifyJwt } from '../authSlice';
+import { Navigate, Outlet } from "react-router-dom";
 
-const PrivateRoute = ({ element }: { element: JSX.Element }) => {
-  // const { isSuccess, isAuthenticated, jwt } = useAppSelector(
-  //   (state) => state.auth
-  // );
+export default function PrivateRoute() {
+  // const isLoggedin = useAuthStoreSelector((s: any) => s.isLoggedin);
+  const isAuthenticated = true;
 
-  // const dispatch = useAppDispatch();
+  if (!isAuthenticated) {
+    return <Navigate to="/" />;
+  }
 
-  // useEffect(() => {
-  //   if (!jwt || !jwt?.token) return;
-
-  //   dispatch(verifyJwt(jwt.token));
-  // }, [jwt, isSuccess]);
-
-  return true ? element : <Navigate replace to={AppRoutes.login} />;
-};
-
-export default PrivateRoute;
+  return <Outlet />;
+}

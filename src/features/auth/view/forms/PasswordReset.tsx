@@ -2,8 +2,8 @@ import { IoIosArrowBack } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { AppRoutes } from "../../../../lib/consts/Routes";
 import useHookForm from "../../../../lib/hooks/useHookForm";
-import { passResetFields } from "../../data/models/formFields";
-import { NetworkResponse } from "../../data/types/Auth";
+import { NetworkResponse } from "../../../../lib/types/Network";
+import { passResetFields } from "../../data/formFields";
 import ErrorMessageText from "./ErrorMessageText";
 
 export default function FormPasswordPreset() {
@@ -11,7 +11,7 @@ export default function FormPasswordPreset() {
     formFields: passResetFields,
   });
 
-  const response: NetworkResponse<any[]> = {
+  const response: NetworkResponse = {
     status: "initial",
   };
 
