@@ -1,10 +1,18 @@
-import { Auth } from "../../data/types/Auth";
+import { AuthType } from "../../data/types/AuthType";
 
 export const reducers = {
-  setCredential: (
-    state: Auth.Selector,
-    { ...actions }: { payload: Auth.Selector }
+  setUser: (state: AuthType.Selector, { payload }: any) => {
+    console.log(payload);
+    state.user = payload;
+  },
+  setCredentials: (
+    state: AuthType.Selector,
+    {
+      payload,
+    }: {
+      payload: Partial<AuthType.Selector>;
+    }
   ) => {
-    state = { ...state, ...actions.payload };
+    return { ...state, ...payload };
   },
 };

@@ -9,7 +9,7 @@ const jwt = new JWTService();
 
 let session = jwt.getSession();
 
-const authAxios = axios.create({
+const httpService = axios.create({
   baseURL,
   headers: { Authorization: `Bearer ${session?.accessToken}` },
 });
@@ -17,8 +17,8 @@ const authAxios = axios.create({
 // * ADD INTERCEPTOR
 // * ---------------
 
-authAxios.interceptors.request.use(async req => {
-  let session = jwt.getSession();
+httpService.interceptors.request.use(async req => {
+  const session = jwt.getSession();
 
   // ! DID ACCESS TOKEN EXPIRED
 
@@ -30,4 +30,4 @@ authAxios.interceptors.request.use(async req => {
   return await jwt.reqNewAccessToken(req);
 });
 
-export default authAxios;
+export default httpService;

@@ -3,8 +3,8 @@ export interface StateResponse {
   message?: string;
 }
 
-export namespace Auth {
-  enum AuthEnum {
+export namespace AuthType {
+  enum Enum {
     user = "user",
     IsAuthenticated = "isAuthenticated",
     session = "session",
@@ -25,8 +25,8 @@ export namespace Auth {
   }
 
   export interface Selector {
-    [AuthEnum.user]: User | null;
-    [AuthEnum.IsAuthenticated]: boolean;
-    [AuthEnum.session]: session | null;
+    [Enum.user]: User | null;
+    [Enum.IsAuthenticated]: boolean;
+    [Enum.session]: session | null;
   }
 }

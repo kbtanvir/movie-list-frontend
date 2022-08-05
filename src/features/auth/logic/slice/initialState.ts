@@ -1,7 +1,7 @@
-import { Auth } from "../../data/types/Auth";
+import { AuthType } from "../../data/types/AuthType";
 
-export const initialState: Auth.Selector = {
+export const initialState: AuthType.Selector = {
   user: null,
   isAuthenticated: false,
-
+  session: null,
 };

@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { Auth } from "../../data/types/Auth";
+import { AuthType } from "../../data/types/AuthType";
 import { baseURL } from "./axios.interceptor.v2";
 
 export class JWTService {
@@ -17,24 +17,24 @@ export class JWTService {
   }
 
   public isTokenValid(token: string): boolean {
-    const user: Auth.User = this.decodeToken(token);
+    const user: AuthType.User = this.decodeToken(token);
     return this.isExpired(user.exp);
   }
 
-  public getSession(): Auth.session {
+  public getSession(): AuthType.session {
     let session = JSON.parse(
-      localStorage.getItem(Auth.AuthEnum.session) as string
+      localStorage.getItem(AuthType.Enum.session) as string
     );
     if (!session) {
       session = JSON.parse(
-        localStorage.getItem(Auth.AuthEnum.session) as string
+        localStorage.getItem(AuthType.Enum.session) as string
       );
     }
     return session;
   }
 
-  public setSession(session: Auth.Selector[Auth.AuthEnum.session]): void {
-    localStorage.setItem(Auth.AuthEnum.session, JSON.stringify(session));
+  public setSession(session: AuthType.Selector[AuthType.Enum.session]): void {
+    localStorage.setItem(AuthType.Enum.session, JSON.stringify(session));
   }
 
   public async reqNewAccessToken(req: AxiosRequestConfig<any>) {

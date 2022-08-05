@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { AppRoutes } from "../../../../lib/consts/Routes";
 import useHookForm, { FormField } from "../../../../lib/hooks/useHookForm";
 import { loginForm, registrationForm } from "../../data/formFields";
+import { sliceSettings } from "../../logic/slice";
 import ErrorMessageText from "./ErrorMessageText";
 
 export default function AuthForm({ ...props }: { register?: boolean }) {
-  // const { response } = useSelector((state: RootState) => state.global)
-  // const dispatch = useDispatch()
+  const { session, isAuthenticated } = useSelector(sliceSettings.state);
+  const actions = sliceSettings.actions;
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   // * HOOK FORM CONFIG
@@ -23,18 +27,8 @@ export default function AuthForm({ ...props }: { register?: boolean }) {
   // -------------
 
   const onSubmit = (data: any) => {
-    if (props.register) {
-      // dispatch(registerWithEmailPassRequest(data.email, data.password))
-    }
-    if (!props.register) {
-    }
-
-    navigate(AppRoutes.movies, { replace: true });
-
     console.log(data);
-
-    // dispatch(signInWithEmailPassRequest(data.email, data.password))
-    // console.log(data);
+    navigate(AppRoutes.movies, { replace: true });
   };
 
   // * EFFECTS
@@ -43,12 +37,24 @@ export default function AuthForm({ ...props }: { register?: boolean }) {
   useEffect(() => {
     setFormFields(props.register ? registrationForm : loginForm);
   }, [props.register]);
+  useEffect(() => {
+    dispatch(
+      actions.setCredentials({
+        isAuthenticated: true,
+        session: {
+          accessToken: "asdfj;asdifj",
+          refreshToken: "asdfjosija",
+        },
+      })
+    );
+  }, []);
 
   // * RENDER
   // -------------
 
   return (
     <div>
+      
       <h3>{props.register ? "Signup" : "Login"}</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         {formFields.map((field, i) => (

@@ -1,10 +1,24 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+} from "react-router-dom";
 import FormLogin from "./features/auth/view/forms/AuthForm";
 import FormPasswordPreset from "./features/auth/view/forms/PasswordReset";
 import MoviesView from "./features/movies/view/MoviesView";
 import "./global.css";
 import { AppRoutes } from "./lib/consts/Routes";
-import PrivateRoute from "./lib/layouts/PrivateRoute";
+
+function PrivateRoute() {
+  const isAuthenticated = true;
+
+  if (!isAuthenticated) {
+    return <Navigate to="/" />;
+  }
+  return <Outlet />;
+}
 
 export default function App() {
   return (
@@ -15,6 +29,8 @@ export default function App() {
 
           <Route element={<PrivateRoute />}>
             <Route path={AppRoutes.movies} element={<MoviesView />} />
+            <Route path="*" element={<ErrorView />} />
+            <Route path="/" element={<Navigate to={"/login"} />} />
           </Route>
 
           {/* * AUTH ROUTES */}
@@ -25,12 +41,6 @@ export default function App() {
             path={AppRoutes.passwordReset}
             element={<FormPasswordPreset />}
           />
-
-          {/* * DEFAULT ROUTE */}
-
-          <Route path="*" element={<PrivateRoute />}>
-            <Route index element={<ErrorView />} />
-          </Route>
         </Routes>
       </Router>
     </div>

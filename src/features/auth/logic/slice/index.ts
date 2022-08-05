@@ -10,8 +10,14 @@ export const slice = createSlice({
   initialState,
   reducers,
 });
+
 export const authActions = slice.actions;
 
-export const authSelector = (state: RootState) => state[sliceName];
+export const authSelector = (state: RootState) => state.auth;
+
+export const sliceSettings = {
+  actions: slice.actions,
+  state: (state: RootState) => state[sliceName],
+};
 
 export default slice.reducer;
