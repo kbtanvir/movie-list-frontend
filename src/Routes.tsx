@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import {
   BrowserRouter as Router,
   Navigate,
@@ -5,17 +6,18 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+import { sliceStore } from "./features/auth/logic/slice";
 import FormLogin from "./features/auth/view/forms/AuthForm";
 import FormPasswordPreset from "./features/auth/view/forms/PasswordReset";
 import MoviesView from "./features/movies/view/MoviesView";
 import "./global.css";
-import { AppRoutes } from "./lib/consts/Routes";
+import { AppRoutes } from "./lib/consts/appRoutes";
 
 function PrivateRoute() {
-  const isAuthenticated = true;
+  const { isAuthenticated } = useSelector(sliceStore.state);
 
   if (!isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to={AppRoutes.register} />;
   }
   return <Outlet />;
 }
@@ -30,7 +32,7 @@ export default function App() {
           <Route element={<PrivateRoute />}>
             <Route path={AppRoutes.movies} element={<MoviesView />} />
             <Route path="*" element={<ErrorView />} />
-            <Route path="/" element={<Navigate to={"/login"} />} />
+            <Route path="/" element={<Navigate to={AppRoutes.register} />} />
           </Route>
 
           {/* * AUTH ROUTES */}

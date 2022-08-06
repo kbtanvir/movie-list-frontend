@@ -1,11 +1,16 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import { sliceStore } from "../../features/auth/logic/slice";
 import { reducer } from "./store.reducer";
 
-const preloadedState = function () {
+const preloadedState = () => {
   try {
     const serialisedState = localStorage.getItem("state");
+
     if (serialisedState === null) return undefined;
-    return JSON.parse(serialisedState);
+
+    const auth = JSON.parse(serialisedState);
+
+    return auth;
   } catch (e) {
     console.warn(e);
     return undefined;
@@ -18,7 +23,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
     }),
-  // preloadedState: preloadedState(),
+  preloadedState: preloadedState(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -35,8 +40,8 @@ store.subscribe(() => {
   const state = store.getState();
 
   const persist = {
-    session: state.auth.session,
+    auth: state.auth,
   };
 
-  // window.localStorage.setItem("state", JSON.stringify(persist));
+  window.localStorage.setItem("state", JSON.stringify(persist));
 });

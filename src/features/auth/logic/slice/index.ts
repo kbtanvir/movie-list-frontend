@@ -11,11 +11,10 @@ export const slice = createSlice({
   reducers,
 });
 
-export const authActions = slice.actions;
-
 export const authSelector = (state: RootState) => state.auth;
 
-export const sliceSettings = {
+export const sliceStore = {
+  reset: () => slice.actions.setCredentials(initialState),
   actions: slice.actions,
   state: (state: RootState) => state[sliceName],
 };

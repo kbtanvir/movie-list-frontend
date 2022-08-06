@@ -1,6 +1,11 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { AuthType } from "../../data/types/AuthType";
-import { baseURL } from "./axios.interceptor.v2";
+import axios from "axios";
+import store, { RootState } from "../../../../lib/store/store";
+import { AuthStore } from "../../data/dto/AuthStore";
+import { RefreshTokenDto } from "../../data/dto/refresh-token.dto";
+import { sliceStore } from "../slice";
+import { initialState } from "../slice/initialState";
+import { APIEndpoints } from "./auth.service";
+import { baseURL } from "./axios.interceptor";
 
 export class JWTService {
   public decodeToken(token: string): any {
@@ -11,54 +16,51 @@ export class JWTService {
     return JSON.parse(window.atob(actualToken));
   }
 
-  public isExpired(exp: number): boolean {
+  public isExpired(token: string): boolean {
+    const user: AuthStore.User = this.decodeToken(token);
     const now = new Date().getTime() / 1000;
-    return exp > now;
+    return user.exp < now;
   }
 
-  public isTokenValid(token: string): boolean {
-    const user: AuthType.User = this.decodeToken(token);
-    return this.isExpired(user.exp);
-  }
-
-  public getSession(): AuthType.session {
-    let session = JSON.parse(
-      localStorage.getItem(AuthType.Enum.session) as string
+  public getSession(): AuthStore.session {
+    const state: RootState = JSON.parse(
+      localStorage.getItem("state") as string
     );
-    if (!session) {
-      session = JSON.parse(
-        localStorage.getItem(AuthType.Enum.session) as string
+    if (state === null) {
+      store.dispatch(sliceStore.actions.setCredentials(initialState));
+      return state;
+    }
+
+    return state.auth.session as AuthStore.session;
+  }
+
+  public setSession(session: AuthStore.State[AuthStore.Enum.session]): void {
+    store.dispatch(sliceStore.actions.setCredentials({ session }));
+    localStorage.setItem("state", JSON.stringify(store.getState()));
+
+    store.dispatch(
+      sliceStore.actions.setCredentials({ session, isAuthenticated: true })
+    );
+
+    // localStorage.setItem(AuthStore.Enum.session, JSON.stringify(session));
+  }
+
+  public async refreshToken(dto: RefreshTokenDto): Promise<AuthStore.session> {
+    
+    try {
+      const response = await axios.post(
+        baseURL + APIEndpoints.refreshToken,
+        dto
       );
+      // * UPDATE SESSION
+      // * --------------
+
+      const session: AuthStore.session = response.data;
+      store.dispatch(sliceStore.actions.setCredentials({ session }));
+
+      return response.data;
+    } catch (error) {
+      throw error;
     }
-    return session;
-  }
-
-  public setSession(session: AuthType.Selector[AuthType.Enum.session]): void {
-    localStorage.setItem(AuthType.Enum.session, JSON.stringify(session));
-  }
-
-  public async reqNewAccessToken(req: AxiosRequestConfig<any>) {
-    let session = this.getSession();
-
-    // ! IF REFRESH VALID
-
-    if (!this.isTokenValid(session.refreshToken)) {
-      this.setSession(null);
-      return req;
-    }
-
-    const response = await axios.post(`${baseURL}/api/refresh-token`, {
-      refreshToken: session.refreshToken,
-    });
-
-    const { refreshToken } = response.data;
-
-    session = { ...session, refreshToken };
-
-    this.setSession(session);
-
-    req.headers!.Authorization = `Bearer ${response.data.access}`;
-
-    return req;
   }
 }

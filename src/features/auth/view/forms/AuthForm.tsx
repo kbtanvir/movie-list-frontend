@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { AppRoutes } from "../../../../lib/consts/Routes";
+import { AppRoutes } from "../../../../lib/consts/appRoutes";
 import useHookForm, { FormField } from "../../../../lib/hooks/useHookForm";
 import { loginForm, registrationForm } from "../../data/formFields";
-import { sliceSettings } from "../../logic/slice";
+import { AuthService } from "../../logic/services/auth.service";
+import { sliceStore } from "../../logic/slice";
 import ErrorMessageText from "./ErrorMessageText";
 
 export default function AuthForm({ ...props }: { register?: boolean }) {
-  const { session, isAuthenticated } = useSelector(sliceSettings.state);
-  const actions = sliceSettings.actions;
+  const actions = sliceStore.actions;
+  const { session } = useSelector(sliceStore.state);
   const dispatch = useDispatch();
+  const auth = new AuthService();
 
   const navigate = useNavigate();
 
@@ -28,7 +30,6 @@ export default function AuthForm({ ...props }: { register?: boolean }) {
 
   const onSubmit = (data: any) => {
     console.log(data);
-    navigate(AppRoutes.movies, { replace: true });
   };
 
   // * EFFECTS
@@ -37,24 +38,63 @@ export default function AuthForm({ ...props }: { register?: boolean }) {
   useEffect(() => {
     setFormFields(props.register ? registrationForm : loginForm);
   }, [props.register]);
-  useEffect(() => {
-    dispatch(
-      actions.setCredentials({
-        isAuthenticated: true,
-        session: {
-          accessToken: "asdfj;asdifj",
-          refreshToken: "asdfjosija",
-        },
-      })
-    );
-  }, []);
 
   // * RENDER
   // -------------
 
+  function handleLogin() {
+    (async () => {
+      let response = await auth.login({
+        email: "something@gmail.com",
+        password: "123456",
+      });
+      console.log(response);
+    })();
+  }
+  function handleRegister() {
+    (async () => {
+      let response = await auth.register({
+        email: "something@gmail.com",
+        password: "123456",
+      });
+      console.log(response);
+    })();
+  }
+  function handleTest() {
+    (async () => {
+      let response = await auth.testAuth({
+        test: "working",
+      });
+      console.log(response);
+    })();
+  }
+  function handleRefreshToken() {
+    (async () => {
+      let response = await auth.refreshToken({
+        refreshToken: session!.refreshToken,
+      });
+      console.log(response);
+    })();
+  }
+  function handleLogout() {
+    (async () => {
+      let response = await auth.logout({
+        refreshToken: session!.refreshToken,
+      });
+      console.log(response);
+    })();
+  }
+
   return (
     <div>
-      
+      {/* TODO: remove buttons */}
+      <div>
+        <button onClick={handleRegister}>Register</button>
+        <button onClick={handleLogin}>Login</button>
+        <button onClick={handleRefreshToken}>RefreshToken</button>
+        <button onClick={handleTest}>Test Private</button>
+        <button onClick={handleLogout}>Logout</button>
+      </div>
       <h3>{props.register ? "Signup" : "Login"}</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         {formFields.map((field, i) => (

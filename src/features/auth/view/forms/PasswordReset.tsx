@@ -1,6 +1,6 @@
 import { IoIosArrowBack } from "react-icons/io";
 import { Link } from "react-router-dom";
-import { AppRoutes } from "../../../../lib/consts/Routes";
+import { AppRoutes } from "../../../../lib/consts/appRoutes";
 import useHookForm from "../../../../lib/hooks/useHookForm";
 import { NetworkResponse } from "../../../../lib/types/Network";
 import { passResetFields } from "../../data/formFields";
