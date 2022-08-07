@@ -7,8 +7,9 @@ import {
   Routes,
 } from "react-router-dom";
 import { sliceStore } from "./features/auth/logic/slice";
-import FormLogin from "./features/auth/view/forms/AuthForm";
-import FormPasswordPreset from "./features/auth/view/forms/PasswordReset";
+import FormPasswordPreset from "./features/auth/view/forms/ForgotPasswordForm/ForgotPasswordForm";
+import LoginForm from "./features/auth/view/forms/LoginForm/LoginForm";
+import RegistrationForm from "./features/auth/view/forms/RegistrationForm/RegistrationForm";
 import MoviesView from "./features/movies/view/MoviesView";
 import "./global.css";
 import { AppRoutes } from "./lib/consts/appRoutes";
@@ -17,7 +18,15 @@ function PrivateRoute() {
   const { isAuthenticated } = useSelector(sliceStore.state);
 
   if (!isAuthenticated) {
-    return <Navigate to={AppRoutes.register} />;
+    return <Navigate to={AppRoutes.login} />;
+  }
+  return <Outlet />;
+}
+function AuthRoutes() {
+  const { isAuthenticated } = useSelector(sliceStore.state);
+
+  if (isAuthenticated) {
+    return <Navigate to={"/"} />;
   }
   return <Outlet />;
 }
@@ -32,17 +41,19 @@ export default function App() {
           <Route element={<PrivateRoute />}>
             <Route path={AppRoutes.movies} element={<MoviesView />} />
             <Route path="*" element={<ErrorView />} />
-            <Route path="/" element={<Navigate to={AppRoutes.register} />} />
+            <Route path="/" element={<Navigate to={AppRoutes.movies} />} />
           </Route>
 
           {/* * AUTH ROUTES */}
 
-          <Route path={AppRoutes.login} element={<FormLogin />} />
-          <Route path={AppRoutes.register} element={<FormLogin register />} />
-          <Route
-            path={AppRoutes.passwordReset}
-            element={<FormPasswordPreset />}
-          />
+          <Route element={<AuthRoutes />}>
+            <Route path={AppRoutes.login} element={<LoginForm />} />
+            <Route path={AppRoutes.register} element={<RegistrationForm />} />
+            <Route
+              path={AppRoutes.passwordReset}
+              element={<FormPasswordPreset />}
+            />
+          </Route>
         </Routes>
       </Router>
     </div>

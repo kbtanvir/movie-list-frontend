@@ -1,4 +1,4 @@
-import { JwtPayload } from "./JWT";
+import { JwtPayload } from "./JWT.dto";
 
 export interface NetworkResponse {
   isLoading: boolean;

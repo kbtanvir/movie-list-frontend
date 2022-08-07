@@ -1,39 +1,24 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  DeepRequired,
-  FieldErrorsImpl,
-  FieldValues,
-  useForm,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  ValidationMode,
-} from "react-hook-form";
+import { useForm, UseFormReturn, ValidationMode } from "react-hook-form";
 import * as yup from "yup";
 
-export interface FormField {
-  name: string;
+export interface FormField<DTO> {
+  name: keyof DTO;
   label?: string;
   placeholder: string;
-  type: "email" | "password" | "text";
+  type: "email" | "password" | "text" | string;
   validation: () => yup.SchemaOf<any>;
   width?: "full" | "half" | "third";
+  className?: string;
 }
 
 export default function useHookForm({
   ...props
 }: {
-  formFields: FormField[];
+  formFields: FormField<any>[];
   mode?: keyof ValidationMode | undefined;
-}): {
-  errors: FieldErrorsImpl<DeepRequired<FieldValues>>;
-  handleSubmit: UseFormHandleSubmit<FieldValues>;
-  register: UseFormRegister<FieldValues>;
-} {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm({
+}): UseFormReturn<any> {
+  return useForm({
     mode: props.mode ?? "onSubmit",
     resolver: yupResolver(
       yup.object(
@@ -43,7 +28,6 @@ export default function useHookForm({
         )
       )
     ),
+    
   });
-
-  return { register, errors, handleSubmit };
 }

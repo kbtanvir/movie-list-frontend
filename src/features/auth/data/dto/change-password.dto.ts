@@ -1,5 +1,5 @@
 export interface ChangePasswordDto {
-  uid: string;
+  email: string;
   oldPassword: string;
   newPassword: string;
   confirmNewPassword: string;

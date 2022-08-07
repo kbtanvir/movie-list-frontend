@@ -1,10 +1,13 @@
 import axios from "axios";
+import { AuthService } from "./auth.service";
 import { JWTService } from "./jwt.service";
 
 // * CREATE AXIOS INSTANCE
 // * ---------------------
 
 export const baseURL = import.meta.env.VITE_API_ENDPOINT;
+
+axios.defaults.baseURL = baseURL;
 
 const httpService = axios.create({
   baseURL,
@@ -18,30 +21,31 @@ const httpService = axios.create({
 
 httpService.interceptors.request.use(
   async req => {
-    const jwt = new JWTService();
-    const session = jwt.getSession();
+    const jwtService = new JWTService();
+    const authService = new AuthService();
+    const session = authService.getSession();
 
     // ? DOES SESSION EXIST
     // ? ---------------------------------
 
     if (session === null) {
-      jwt.clearSession();
+      authService.clearSession();
       return req;
     }
 
     // ? DID REFRESH TOKEN EXPIRED
     // ? ------------------------
 
-    if (jwt.isExpired(session.refreshToken)) {
-      jwt.clearSession();
+    if (jwtService.isExpired(session.refreshToken)) {
+      authService.clearSession();
       return req;
     }
 
     // ? DID ACCESS TOKEN EXPIRED
     // ? ------------------------
 
-    if (jwt.isExpired(session.accessToken)) {
-      const { accessToken } = await jwt.refreshToken({
+    if (jwtService.isExpired(session.accessToken)) {
+      const { accessToken } = await authService.refreshToken({
         refreshToken: session.refreshToken,
       });
       req.headers = {
@@ -52,7 +56,7 @@ httpService.interceptors.request.use(
     }
 
     // * ADD ACCESSTOKEN & RETURN REQUEST
-    // * -------------
+    // * --------------------------------
 
     req.headers = {
       ...req.headers,

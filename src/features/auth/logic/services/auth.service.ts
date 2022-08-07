@@ -1,7 +1,12 @@
+import axios from "axios";
+import { Router } from "react-router-dom";
+import store from "../../../../lib/store/store";
 import { AuthStore } from "../../data/dto/AuthStore";
 import { ChangePasswordDto } from "../../data/dto/change-password.dto";
 import { LoginDto } from "../../data/dto/login.dto";
 import { RefreshTokenDto } from "../../data/dto/refresh-token.dto";
+import { sliceStore } from "../slice";
+import { initialState } from "../slice/initialState";
 import httpService from "./axios.interceptor";
 import { JWTService } from "./jwt.service";
 
@@ -19,42 +24,60 @@ export class AuthService {
 
   private readonly jwt = new JWTService();
 
-  public async login({ ...data }: LoginDto) {
-    const response = await httpService.post(APIEndpoints.login, data);
-
-    if (!response) return;
-
-    const session: AuthStore.session = response.data;
-
-    this.jwt.updateSession(session);
-  }
-  public async register({ ...data }: LoginDto) {
-    const response = await httpService.post(APIEndpoints.register, data);
+  public async login(dto: LoginDto) {
+    const response = await httpService.post(APIEndpoints.login, dto);
     if (!response) return;
     const session: AuthStore.session = response.data;
-
-    this.jwt.updateSession(session);
-    return response.data;
+    this.updateSession(session);
   }
-  public async testAuth({ ...data }: { test: string }) {
-    const response = await httpService.post(APIEndpoints.test, data);
-    return response.data;
-  }
-  public async refreshToken(dto: RefreshTokenDto) {
-    const response = await httpService.post(APIEndpoints.refreshToken, dto);
+  public async register(dto: LoginDto) {
+    const response = await httpService.post(APIEndpoints.register, dto);
+    if (!response) return;
     const session: AuthStore.session = response.data;
-    this.jwt.updateSession(session);
+    return this.updateSession(session);
   }
-  public async logout(dto: RefreshTokenDto) {
+  public async testAuth(dto: { test: string }) {
+    await httpService.post(APIEndpoints.test, dto);
+  }
+  public async refreshToken(dto: RefreshTokenDto): Promise<AuthStore.session> {
     try {
-      const response = await httpService.post(APIEndpoints.logout, dto);
-      this.jwt.clearSession();
-      return response.data;
+      const response = await axios.post(APIEndpoints.refreshToken, dto);
+      const session: AuthStore.session = response.data;
+
+      this.updateSession(session);
+
+      return session;
     } catch (error) {
+      this.clearSession();
       throw error;
     }
+  }
+  public async logout(dto: RefreshTokenDto) {
+    await httpService.post(APIEndpoints.logout, dto);
+    this.clearSession();
   }
   public async updatePassword(dto: ChangePasswordDto) {
     await httpService.post(APIEndpoints.changePassword, dto);
   }
+  public getSession(): AuthStore.session | null {
+    return store.getState().auth.session;
+  }
+  public clearSession(): void {
+    store.dispatch(sliceStore.actions.setCredentials(initialState));
+  }
+  public updateSession(
+    session: AuthStore.State[AuthStore.Enum.session]
+  ): AuthStore.User {
+    const user: AuthStore.User = this.jwt.decodeToken(session!.accessToken);
+    store.dispatch(
+      sliceStore.actions.setCredentials({
+        user,
+        session,
+        isAuthenticated: true,
+      })
+    );
+    return user;
+  }
 }
+
+export const authService = new AuthService();
