@@ -26,6 +26,7 @@ httpService.interceptors.request.use(
 
     // ! DOES SESSION EXIST IN LOCAL STORAGE
     // ! ---------------------------------
+    
     if (session === null) {
       store.dispatch(sliceStore.actions.setCredentials(initialState));
 
@@ -40,6 +41,7 @@ httpService.interceptors.request.use(
       return req;
     }
     if (jwt.isExpired(session.refreshToken)) {
+
       // ! DID REFRESH TOKEN EXPIRED
       // ! ------------------------
 

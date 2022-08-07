@@ -35,18 +35,14 @@ export class JWTService {
   }
 
   public setSession(session: AuthStore.State[AuthStore.Enum.session]): void {
-    store.dispatch(sliceStore.actions.setCredentials({ session }));
     localStorage.setItem("state", JSON.stringify(store.getState()));
 
     store.dispatch(
       sliceStore.actions.setCredentials({ session, isAuthenticated: true })
     );
-
-    // localStorage.setItem(AuthStore.Enum.session, JSON.stringify(session));
   }
 
   public async refreshToken(dto: RefreshTokenDto): Promise<AuthStore.session> {
-    
     try {
       const response = await axios.post(
         baseURL + APIEndpoints.refreshToken,
@@ -60,6 +56,7 @@ export class JWTService {
 
       return response.data;
     } catch (error) {
+      store.dispatch(sliceStore.actions.setCredentials(initialState));
       throw error;
     }
   }
