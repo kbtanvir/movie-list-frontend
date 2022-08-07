@@ -21,32 +21,24 @@ httpService.interceptors.request.use(
     const jwt = new JWTService();
     const session = jwt.getSession();
 
-    // ? DOES SESSION EXIST IN LOCAL STORAGE
+    // ? DOES SESSION EXIST
     // ? ---------------------------------
 
     if (session === null) {
       jwt.clearSession();
-
       return req;
     }
 
-    if (!jwt.isExpired(session.accessToken)) {
-      req.headers = {
-        ...req.headers,
-        authorization: `Bearer ${session.accessToken}`,
-      };
-      return req;
-    }
+    // ? DID REFRESH TOKEN EXPIRED
+    // ? ------------------------
+
     if (jwt.isExpired(session.refreshToken)) {
-      // ? DID REFRESH TOKEN EXPIRED
-      // ? ------------------------
-
       jwt.clearSession();
       return req;
     }
 
-    //  REFRESH ACCESS TOKEN IF EXPIRED
-    // * --------------------------------
+    // ? DID ACCESS TOKEN EXPIRED
+    // ? ------------------------
 
     if (jwt.isExpired(session.accessToken)) {
       const { accessToken } = await jwt.refreshToken({
@@ -59,6 +51,13 @@ httpService.interceptors.request.use(
       return req;
     }
 
+    // * ADD ACCESSTOKEN & RETURN REQUEST
+    // * -------------
+
+    req.headers = {
+      ...req.headers,
+      authorization: `Bearer ${session.accessToken}`,
+    };
     return req;
   },
   error => {

@@ -22,8 +22,8 @@ export class JWTService {
     return user.exp < now;
   }
 
-  public getSession(): AuthStore.session {
-    return store.getState().auth.session as AuthStore.session;
+  public getSession(): AuthStore.session | null {
+    return store.getState().auth.session;
   }
   public clearSession(): void {
     store.dispatch(sliceStore.actions.setCredentials(initialState));
