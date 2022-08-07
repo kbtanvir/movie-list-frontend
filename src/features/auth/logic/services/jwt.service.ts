@@ -1,5 +1,5 @@
 import axios from "axios";
-import store, { RootState } from "../../../../lib/store/store";
+import store from "../../../../lib/store/store";
 import { AuthStore } from "../../data/dto/AuthStore";
 import { RefreshTokenDto } from "../../data/dto/refresh-token.dto";
 import { sliceStore } from "../slice";
@@ -8,7 +8,7 @@ import { APIEndpoints } from "./auth.service";
 import { baseURL } from "./axios.interceptor";
 
 export class JWTService {
-  public decodeToken(token: string): any {
+  private decodeToken(token: string): any {
     const actualToken = token.split(".")[1];
 
     if (!actualToken) return null;
@@ -23,22 +23,20 @@ export class JWTService {
   }
 
   public getSession(): AuthStore.session {
-    const state: RootState = JSON.parse(
-      localStorage.getItem("state") as string
-    );
-    if (state === null) {
-      store.dispatch(sliceStore.actions.setCredentials(initialState));
-      return state;
-    }
-
-    return state.auth.session as AuthStore.session;
+    return store.getState().auth.session as AuthStore.session;
+  }
+  public clearSession(): void {
+    store.dispatch(sliceStore.actions.setCredentials(initialState));
   }
 
-  public setSession(session: AuthStore.State[AuthStore.Enum.session]): void {
-    localStorage.setItem("state", JSON.stringify(store.getState()));
-
+  public updateSession(session: AuthStore.State[AuthStore.Enum.session]): void {
+    const user: AuthStore.User = this.decodeToken(session!.accessToken);
     store.dispatch(
-      sliceStore.actions.setCredentials({ session, isAuthenticated: true })
+      sliceStore.actions.setCredentials({
+        user,
+        session,
+        isAuthenticated: true,
+      })
     );
   }
 
@@ -48,15 +46,13 @@ export class JWTService {
         baseURL + APIEndpoints.refreshToken,
         dto
       );
-      // * UPDATE SESSION
-      // * --------------
 
       const session: AuthStore.session = response.data;
-      store.dispatch(sliceStore.actions.setCredentials({ session }));
+      this.updateSession(session);
 
       return response.data;
     } catch (error) {
-      store.dispatch(sliceStore.actions.setCredentials(initialState));
+      this.clearSession();
       throw error;
     }
   }

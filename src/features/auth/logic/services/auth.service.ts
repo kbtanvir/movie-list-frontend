@@ -1,10 +1,9 @@
-import store from "../../../../lib/store/store";
 import { AuthStore } from "../../data/dto/AuthStore";
+import { ChangePasswordDto } from "../../data/dto/change-password.dto";
 import { LoginDto } from "../../data/dto/login.dto";
 import { RefreshTokenDto } from "../../data/dto/refresh-token.dto";
-import { initialState } from "../slice/initialState";
-import { sliceStore } from "./../slice/index";
 import httpService from "./axios.interceptor";
+import { JWTService } from "./jwt.service";
 
 export enum APIEndpoints {
   login = "/auth/login",
@@ -12,74 +11,50 @@ export enum APIEndpoints {
   refreshToken = "/auth/refresh-token",
   logout = "/auth/logout",
   test = "/auth/test",
+  changePassword = "/auth/change-password",
 }
 
 export class AuthService {
   constructor() {}
 
-  public readonly isLoading = false;
-  public readonly message = "";
-  public readonly user = null;
+  private readonly jwt = new JWTService();
 
-  public async login({ ...data }: LoginDto): Promise<AuthStore.session> {
-    try {
-      const response = await httpService.post(APIEndpoints.login, data);
+  public async login({ ...data }: LoginDto) {
+    const response = await httpService.post(APIEndpoints.login, data);
 
-      // * UPDATE SESSION
-      // * --------------
+    if (!response) return;
 
-      const session: AuthStore.session = response.data;
-      store.dispatch(sliceStore.actions.setCredentials({ session }));
+    const session: AuthStore.session = response.data;
 
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    this.jwt.updateSession(session);
   }
-  public async register({ ...data }: LoginDto): Promise<any | undefined> {
-    try {
-      const response = await httpService.post(APIEndpoints.register, data);
+  public async register({ ...data }: LoginDto) {
+    const response = await httpService.post(APIEndpoints.register, data);
+    if (!response) return;
+    const session: AuthStore.session = response.data;
 
-      // * UPDATE SESSION
-      // * --------------
-
-      const session: AuthStore.session = response.data;
-      store.dispatch(sliceStore.actions.setCredentials({ session }));
-
-      return response.data;
-    } catch (error: any) {
-      throw error;
-    }
+    this.jwt.updateSession(session);
+    return response.data;
   }
-  public async testAuth({ ...data }: { test: string }): Promise<any> {
-    try {
-      const response = await httpService.post(APIEndpoints.test, data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+  public async testAuth({ ...data }: { test: string }) {
+    const response = await httpService.post(APIEndpoints.test, data);
+    return response.data;
   }
-  public async refreshToken(dto: RefreshTokenDto): Promise<any> {
-    try {
-      const response = await httpService.post(APIEndpoints.refreshToken, dto);
-      // * UPDATE SESSION
-      // * --------------
-
-      const session: AuthStore.session = response.data;
-      store.dispatch(sliceStore.actions.setCredentials({ session }));
-
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+  public async refreshToken(dto: RefreshTokenDto) {
+    const response = await httpService.post(APIEndpoints.refreshToken, dto);
+    const session: AuthStore.session = response.data;
+    this.jwt.updateSession(session);
   }
-  public async logout(dto: RefreshTokenDto): Promise<any> {
+  public async logout(dto: RefreshTokenDto) {
     try {
       const response = await httpService.post(APIEndpoints.logout, dto);
-      store.dispatch(sliceStore.actions.setCredentials(initialState));
+      this.jwt.clearSession();
       return response.data;
     } catch (error) {
       throw error;
     }
+  }
+  public async updatePassword(dto: ChangePasswordDto) {
+    await httpService.post(APIEndpoints.changePassword, dto);
   }
 }

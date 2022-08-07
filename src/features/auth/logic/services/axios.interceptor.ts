@@ -1,13 +1,10 @@
 import axios from "axios";
-import store from "../../../../lib/store/store";
-import { sliceStore } from "../slice";
-import { initialState } from "../slice/initialState";
 import { JWTService } from "./jwt.service";
 
 // * CREATE AXIOS INSTANCE
 // * ---------------------
 
-export const baseURL = "http://localhost:3000";
+export const baseURL = import.meta.env.VITE_API_ENDPOINT;
 
 const httpService = axios.create({
   baseURL,
@@ -16,19 +13,19 @@ const httpService = axios.create({
   },
 });
 
-// * ADD INTERCEPTOR
+// * REQUEST INTERCEPTOR
 // * ---------------
 
 httpService.interceptors.request.use(
   async req => {
     const jwt = new JWTService();
-    let session = jwt.getSession();
+    const session = jwt.getSession();
 
-    // ! DOES SESSION EXIST IN LOCAL STORAGE
-    // ! ---------------------------------
-    
+    // ? DOES SESSION EXIST IN LOCAL STORAGE
+    // ? ---------------------------------
+
     if (session === null) {
-      store.dispatch(sliceStore.actions.setCredentials(initialState));
+      jwt.clearSession();
 
       return req;
     }
@@ -41,15 +38,14 @@ httpService.interceptors.request.use(
       return req;
     }
     if (jwt.isExpired(session.refreshToken)) {
+      // ? DID REFRESH TOKEN EXPIRED
+      // ? ------------------------
 
-      // ! DID REFRESH TOKEN EXPIRED
-      // ! ------------------------
-
-      store.dispatch(sliceStore.actions.setCredentials(initialState));
+      jwt.clearSession();
       return req;
     }
 
-    // * REFRESH ACCESS TOKEN IF EXPIRED
+    //  REFRESH ACCESS TOKEN IF EXPIRED
     // * --------------------------------
 
     if (jwt.isExpired(session.accessToken)) {
@@ -66,6 +62,20 @@ httpService.interceptors.request.use(
     return req;
   },
   error => {
+    return Promise.reject(error);
+  }
+);
+
+// * RESPONSE INTERCEPTOR
+// * --------------------
+
+httpService.interceptors.response.use(
+  response => {
+    console.log(response.data);
+    return response;
+  },
+  error => {
+    console.log(error.response.data);
     return Promise.reject(error);
   }
 );

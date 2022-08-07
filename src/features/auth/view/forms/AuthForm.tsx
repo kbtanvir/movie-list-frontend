@@ -10,7 +10,7 @@ import ErrorMessageText from "./ErrorMessageText";
 
 export default function AuthForm({ ...props }: { register?: boolean }) {
   const actions = sliceStore.actions;
-  const { session } = useSelector(sliceStore.state);
+  const { user, session } = useSelector(sliceStore.state);
   const dispatch = useDispatch();
   const auth = new AuthService();
 
@@ -44,44 +44,49 @@ export default function AuthForm({ ...props }: { register?: boolean }) {
 
   function handleLogin() {
     (async () => {
-      let response = await auth.login({
+      await auth.login({
         email: "something@gmail.com",
-        password: "123456",
+        password: "newpassword",
       });
-      console.log(response);
     })();
   }
   function handleRegister() {
     (async () => {
-      let response = await auth.register({
+      await auth.register({
         email: "something@gmail.com",
         password: "123456",
       });
-      console.log(response);
     })();
   }
   function handleTest() {
     (async () => {
-      let response = await auth.testAuth({
+      await auth.testAuth({
         test: "working",
       });
-      console.log(response);
     })();
   }
   function handleRefreshToken() {
     (async () => {
-      let response = await auth.refreshToken({
+      await auth.refreshToken({
         refreshToken: session!.refreshToken,
       });
-      console.log(response);
     })();
   }
   function handleLogout() {
     (async () => {
-      let response = await auth.logout({
+      await auth.logout({
         refreshToken: session!.refreshToken,
       });
-      console.log(response);
+    })();
+  }
+  function updatePassword() {
+    (async () => {
+      await auth.updatePassword({
+        uid: user!.id,
+        oldPassword: "newpassword",
+        newPassword: "newpassword",
+        confirmNewPassword: "newpassword",
+      });
     })();
   }
 
@@ -94,6 +99,7 @@ export default function AuthForm({ ...props }: { register?: boolean }) {
         <button onClick={handleRefreshToken}>RefreshToken</button>
         <button onClick={handleTest}>Test Private</button>
         <button onClick={handleLogout}>Logout</button>
+        <button onClick={updatePassword}>updatePassword</button>
       </div>
       <h3>{props.register ? "Signup" : "Login"}</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
