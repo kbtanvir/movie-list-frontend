@@ -1,5 +1,9 @@
-import { useState } from "react";
 import { BiUser } from "react-icons/bi";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { authService } from "../../../features/auth/logic/services/auth.service";
+import { sliceStore } from "../../../features/auth/logic/slice";
+import { AppRoutes } from "../../consts/appRoutes";
 import styles from "./HeaderLayout.module.css";
 export default function HeaderLayout() {
   return (
@@ -11,17 +15,28 @@ export default function HeaderLayout() {
 }
 
 function DropdownMenu() {
-  const [isOpen, setIsOpen] = useState(true);
+  const navigate = useNavigate();
+
+  const { session } = useSelector(sliceStore.state);
+
+  function handleLogout() {
+    authService
+      .logout({
+        refreshToken: session!.refreshToken,
+      })
+      .then(() => {
+        navigate(AppRoutes.movies);
+      });
+  }
 
   return (
     <div className={styles.dropdownMenu}>
-      {/* <button className={styles.dropdownMenuButton} onMouseMove={handleClick}>
-        Dropdown Menu
-      </button> */}
       <BiUser className={styles.dropdownMenuButton} />
       <div className={styles.dropdownMenuContent}>
-        <a href="#">Login</a>
-        <a href="#">Register</a>
+        <a href="#" onClick={handleLogout}>
+          Logout
+        </a>
+        {/* <a href="#">Register</a> */}
       </div>
     </div>
   );

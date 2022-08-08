@@ -37,25 +37,23 @@ export default function LoginForm() {
   // -------------
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h3>Login</h3>
-        {loginFields.map((field, i) => (
-          <CustomInput
-            key={i}
-            register={register}
-            errors={errors}
-            field={field}
-          />
-        ))}
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h3>Login</h3>
+      {loginFields.map((field, i) => (
+        <CustomInput
+          key={i}
+          register={register}
+          errors={errors}
+          field={field}
+        />
+      ))}
 
-        <Button text="Continue" />
+      <Button text="Continue" />
 
-        <div className="bottom-links">
-          <Link to={AppRoutes.register}>Don't have an account?</Link>
-          <Link to={AppRoutes.passwordReset}>Forgot password?</Link>
-        </div>
-      </form>
-    </>
+      <div className="bottom-links">
+        <Link to={AppRoutes.register}>Don't have an account?</Link>
+        <Link to={AppRoutes.passwordReset}>Forgot password?</Link>
+      </div>
+    </form>
   );
 }

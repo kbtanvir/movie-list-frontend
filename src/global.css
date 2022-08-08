@@ -17,6 +17,8 @@
 }
 .page-wrapper {
   padding: 80px 80px;
+  background-color: rgb(13, 13, 13);
+  min-height: 90vh;
 }
 body,
 html,
@@ -27,12 +29,14 @@ html,
 }
 body {
   background-color: black;
-  overflow: hidden;
+  /* overflow: hidden; */
   margin: 0;
   padding: 0;
 }
 /* GLOBAL CSS */
-
+h1 {
+  font-size: 50px;
+}
 h3 {
   text-align: center;
   margin-top: 20px;
@@ -51,9 +55,12 @@ form {
   border-radius: 20px;
   padding: 30px;
 }
+input {
+  color: black !important;
+}
 
 input::placeholder {
-  color: rgb(72, 72, 72);
+  /* color: rgb(72, 72, 72); */
   font-size: 16px;
 }
 

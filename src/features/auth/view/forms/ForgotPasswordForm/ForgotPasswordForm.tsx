@@ -20,27 +20,25 @@ export default function FormPasswordPreset() {
 
   const onSubmit = async (dto: ChangePasswordDto) => {
     await authService.updatePassword(dto).then(() => {
-      navigate(AppRoutes.login);
+      navigate(AppRoutes.passwordReset);
     });
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h3>Request new password</h3>
-        {passResetFields.map((field, i) => (
-          <CustomInput
-            key={i}
-            register={register}
-            errors={errors}
-            field={field}
-          />
-        ))}
-        <Button text="Reset password" />
-        <div className="bottom-links">
-          <Link to={AppRoutes.login}>Back to login</Link>
-        </div>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h3>Request new password</h3>
+      {passResetFields.map((field, i) => (
+        <CustomInput
+          key={i}
+          register={register}
+          errors={errors}
+          field={field}
+        />
+      ))}
+      <Button text="Reset password" />
+      <div className="bottom-links">
+        <Link to={AppRoutes.login}>Back to login</Link>
+      </div>
+    </form>
   );
 }
