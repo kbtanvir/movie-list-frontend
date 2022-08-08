@@ -1,4 +1,5 @@
 import axios from "axios";
+import { notify } from "../../../../lib/utils/helper";
 import { AuthService } from "./auth.service";
 import { JWTService } from "./jwt.service";
 
@@ -78,7 +79,11 @@ httpService.interceptors.response.use(
     return response;
   },
   error => {
-    console.log(error.response.data);
+    notify({
+      message: error.response.data.message,
+      type: "error",
+    });
+
     return Promise.reject(error);
   }
 );

@@ -1,13 +1,15 @@
-import { IoIosArrowBack } from "react-icons/io";
-import { Link } from "react-router-dom";
-import CustomInput from "../../../../../lib/atoms/Input";
+import { Link, useNavigate } from "react-router-dom";
+import Button from "../../../../../lib/atoms/Button/Button";
+import CustomInput from "../../../../../lib/atoms/Input/Input";
 import { AppRoutes } from "../../../../../lib/consts/appRoutes";
 import useHookForm from "../../../../../lib/hooks/useHookForm";
-import { NetworkResponse } from "../../../../../lib/types/Network";
 import { ChangePasswordDto } from "../../../data/dto/change-password.dto";
 import { passResetFields } from "../../../data/formFields";
+import { authService } from "../../../logic/services/auth.service";
 
 export default function FormPasswordPreset() {
+  const navigate = useNavigate();
+
   const {
     formState: { errors },
     register,
@@ -16,22 +18,14 @@ export default function FormPasswordPreset() {
     formFields: passResetFields,
   });
 
-  const response: NetworkResponse = {
-    status: "initial",
-  };
-
-  const onSubmit = (data: ChangePasswordDto) => {
-    console.log(data);
+  const onSubmit = async (dto: ChangePasswordDto) => {
+    await authService.updatePassword(dto).then(() => {
+      navigate(AppRoutes.login);
+    });
   };
 
   return (
     <div>
-      <Link to={AppRoutes.login}>
-        <span onClick={() => {}}>
-          <IoIosArrowBack /> Back to login
-        </span>
-      </Link>
-
       <form onSubmit={handleSubmit(onSubmit)}>
         <h3>Request new password</h3>
         {passResetFields.map((field, i) => (
@@ -42,8 +36,9 @@ export default function FormPasswordPreset() {
             field={field}
           />
         ))}
-        <div>
-          <button type="submit">Reset password</button>
+        <Button text="Reset password" />
+        <div className="bottom-links">
+          <Link to={AppRoutes.login}>Back to login</Link>
         </div>
       </form>
     </div>

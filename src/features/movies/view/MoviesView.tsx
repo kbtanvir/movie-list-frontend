@@ -1,3 +1,7 @@
 export default function MoviesView() {
-  return <div>MoviesView</div>;
+  return (
+    <div>
+      <h1>Moves title</h1>
+    </div>
+  );
 }

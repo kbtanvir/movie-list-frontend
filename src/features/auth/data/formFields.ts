@@ -33,7 +33,7 @@ export const registrationFields: FormField<RegisterDto>[] = [
     type: "password",
     placeholder: "Type 8 digit passcode",
     validation: () =>
-      yup.string().min(8, "Must be 8 digit long").required("Required"),
+      yup.string().min(8, "Must be 8 digit long >_<").required("Required"),
   },
 ];
 export const loginFields: FormField<LoginDto>[] = [
@@ -64,8 +64,8 @@ export const passResetFields: FormField<ChangePasswordDto>[] = [
     validation: () =>
       yup
         .string()
-        .email(`"Doesn't look like an email address" >_<`)
-        .required(`"Email is required" >_<`),
+        .email(`Doesn't look like an email address >_<`)
+        .required(`Email is required >_<`),
   },
   {
     name: "oldPassword",
@@ -73,7 +73,7 @@ export const passResetFields: FormField<ChangePasswordDto>[] = [
     type: "password",
     placeholder: "Type your old password",
     validation: () =>
-      yup.string().min(8, "Must be 8 digit long").required("Required"),
+      yup.string().min(8, "Must be 8 digit long >_<").required("Required >_<"),
   },
   {
     name: "newPassword",
@@ -81,7 +81,9 @@ export const passResetFields: FormField<ChangePasswordDto>[] = [
     type: "password",
     placeholder: "Type 8 digit passcode",
     validation: () =>
-      yup.string().oneOf([yup.ref("password"), null], "Passwords must match"),
+      yup
+        .string()
+        .notOneOf([yup.ref("oldPassword"), null], "Same as old password >_<"),
   },
   {
     name: "confirmNewPassword",
@@ -91,6 +93,6 @@ export const passResetFields: FormField<ChangePasswordDto>[] = [
     validation: () =>
       yup
         .string()
-        .oneOf([yup.ref("newPassword"), null], "Passwords must match"),
+        .oneOf([yup.ref("newPassword"), null], "Passwords don't match  >_<"),
   },
 ];

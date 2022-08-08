@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import CustomInput from "../../../../../lib/atoms/Input";
+import Button from "../../../../../lib/atoms/Button/Button";
+import CustomInput from "../../../../../lib/atoms/Input/Input";
 import { AppRoutes } from "../../../../../lib/consts/appRoutes";
 import useHookForm from "../../../../../lib/hooks/useHookForm";
 import { RegisterDto } from "../../../data/dto/register.dto";
@@ -23,15 +24,10 @@ export default function RegistrationForm() {
   // * HANDLERS
   // -------------
 
-  const onSubmit = (dto: RegisterDto) => {
-    (async () => {
-      try {
-        await authService.register(dto);
-        navigate(AppRoutes.movies);
-      } catch (error) {
-        throw error;
-      }
-    })();
+  const onSubmit = async (dto: RegisterDto) => {
+    authService.register(dto).then(() => {
+      navigate(AppRoutes.movies);
+    });
   };
 
   // * EFFECTS
@@ -43,6 +39,7 @@ export default function RegistrationForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <h3>Signup</h3>
+
       {registrationFields.map((field, i) => (
         <CustomInput
           key={i}
@@ -51,16 +48,10 @@ export default function RegistrationForm() {
           field={field}
         />
       ))}
-      <div>
-        <button type="submit">Continue</button>
-
-        <Link to={AppRoutes.login}>
-          <span>Already have an account?</span>
-        </Link>
-
-        <Link to={AppRoutes.passwordReset}>
-          <span>Forgot password?</span>
-        </Link>
+      <Button text="Continue" />
+      <div className="bottom-links">
+        <Link to={AppRoutes.login}>Already have an account?</Link>
+        <Link to={AppRoutes.passwordReset}>Forgot password?</Link>
       </div>
     </form>
   );

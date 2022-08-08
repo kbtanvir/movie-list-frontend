@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import CustomInput from "../../../../../lib/atoms/Input";
+import Button from "../../../../../lib/atoms/Button/Button";
+import CustomInput from "../../../../../lib/atoms/Input/Input";
 import { AppRoutes } from "../../../../../lib/consts/appRoutes";
 import useHookForm from "../../../../../lib/hooks/useHookForm";
 import { LoginDto } from "../../../data/dto/login.dto";
-import { loginFields, registrationFields } from "../../../data/formFields";
+import { loginFields } from "../../../data/formFields";
 import { authService } from "../../../logic/services/auth.service";
 
 export default function LoginForm() {
@@ -23,15 +24,10 @@ export default function LoginForm() {
   // * HANDLERS
   // -------------
 
-  const onSubmit = (dto: LoginDto) => {
-    (async () => {
-      try {
-        await authService.login(dto);
-        navigate(AppRoutes.movies);
-      } catch (error) {
-        throw error;
-      }
-    })();
+  const onSubmit = async (dto: LoginDto) => {
+    authService.login(dto).then(() => {
+      navigate(AppRoutes.movies);
+    });
   };
 
   // * EFFECTS
@@ -41,28 +37,25 @@ export default function LoginForm() {
   // -------------
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h3>LOGIN</h3>
-      {loginFields.map((field, i) => (
-        <CustomInput
-          key={i}
-          register={register}
-          errors={errors}
-          field={field}
-        />
-      ))}
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <h3>Login</h3>
+        {loginFields.map((field, i) => (
+          <CustomInput
+            key={i}
+            register={register}
+            errors={errors}
+            field={field}
+          />
+        ))}
 
-      <div>
-        <button type="submit">Continue</button>
+        <Button text="Continue" />
 
-        <Link to={AppRoutes.register}>
-          <span>Don't have an account?</span>
-        </Link>
-
-        <Link to={AppRoutes.passwordReset}>
-          <span>Forgot password?</span>
-        </Link>
-      </div>
-    </form>
+        <div className="bottom-links">
+          <Link to={AppRoutes.register}>Don't have an account?</Link>
+          <Link to={AppRoutes.passwordReset}>Forgot password?</Link>
+        </div>
+      </form>
+    </>
   );
 }

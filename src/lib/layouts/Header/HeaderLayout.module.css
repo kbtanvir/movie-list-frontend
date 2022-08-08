@@ -1,0 +1,75 @@
+.header {
+  background-color: black;
+  padding: 30px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid red;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  text-align: center;
+}
+
+.logoText {
+  font-size: 30px;
+  font-weight: 200;
+  color: red;
+}
+
+.dropdownMenu {
+  display: grid;
+  align-items: center;
+  position: relative;
+}
+.dropdownMenuButton {
+  background-color: black;
+  color: red;
+  border: none;
+  font-size: 30px;
+  font-weight: 200;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.dropdownMenuButton:hover {
+  color: white;
+}
+
+.dropdownMenuContent {
+  display: grid;
+  border: 2px solid white;
+  background-color: black;
+  gap: 20px;
+  text-align: center;
+  position: absolute;
+  top: 60px;
+  border-radius: 20px;
+  padding: 20px;
+  right: -20px;
+  transition: 0.3s ease-in-out;
+  visibility: hidden;
+  opacity: 0;
+}
+.dropdownMenu:hover .dropdownMenuContent {
+  visibility: visible !important;
+  opacity: 1;
+}
+.dropdownMenuContent a {
+  color: white;
+  font-weight: 200;
+  text-decoration: none;
+  font-size: 20px;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+  padding: 10px 10px;
+}
+.dropdownMenuContent:hover {
+  border-color: red;
+  color: white;
+}
+.dropdownMenuContent a:hover {
+  color: red;
+}
