@@ -75,10 +75,15 @@ httpService.interceptors.request.use(
 
 httpService.interceptors.response.use(
   response => {
-    console.log(response.data);
+    notify({
+      message: response.data.message || "Sucess",
+      type: "success",
+    });
+    // console.log(response.data);
     return response;
   },
   error => {
+    console.log(error.response.data);
     notify({
       message: error.response.data.message,
       type: "error",

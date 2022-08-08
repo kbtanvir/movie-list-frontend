@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { authService } from "../../../features/auth/logic/services/auth.service";
 import { sliceStore } from "../../../features/auth/logic/slice";
 import { AppRoutes } from "../../consts/appRoutes";
-import styles from "./HeaderLayout.module.css";
+import styles from "./index.module.css";
 export default function HeaderLayout() {
   return (
     <div className={styles.header}>

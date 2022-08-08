@@ -4,7 +4,7 @@ import styles from "./MoviesView.module.css";
 export default function MoviesView() {
   return (
     <div>
-      <h1>Moves title</h1>
+      <h2 className={styles.pageTitle}>Top picks</h2>
       <MovieList />
     </div>
   );

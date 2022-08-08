@@ -9,13 +9,14 @@ import {
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { sliceStore } from "./features/auth/logic/slice";
-import FormPasswordPreset from "./features/auth/view/forms/ForgotPasswordForm/ForgotPasswordForm";
-import LoginForm from "./features/auth/view/forms/LoginForm/LoginForm";
-import RegistrationForm from "./features/auth/view/forms/RegistrationForm/RegistrationForm";
-import MoviesView from "./features/movies/view/MoviesView";
+import FormPasswordPreset from "./features/auth/view/forms/ChangePasswordForm";
+import LoginForm from "./features/auth/view/forms/LoginForm";
+import RegistrationForm from "./features/auth/view/forms/RegistrationForm";
+import RequestChangePassForm from "./features/auth/view/forms/RequestChangePassForm";
+import MoviesView from "./features/movies/view/Movies/MoviesView";
 import "./global.css";
 import { AppRoutes } from "./lib/consts/appRoutes";
-import HeaderLayout from "./lib/layouts/Header/HeaderLayout";
+import HeaderLayout from "./lib/layouts/Header";
 export default function App() {
   return (
     <>
@@ -35,6 +36,10 @@ export default function App() {
           <Route element={<AuthRoute />}>
             <Route path={AppRoutes.login} element={<LoginForm />} />
             <Route path={AppRoutes.register} element={<RegistrationForm />} />
+            <Route
+              path={AppRoutes.requestChangePassword}
+              element={<RequestChangePassForm />}
+            />
             <Route
               path={AppRoutes.passwordReset}
               element={<FormPasswordPreset />}

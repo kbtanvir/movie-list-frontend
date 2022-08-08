@@ -25,7 +25,7 @@ export default function LoginForm() {
   // -------------
 
   const onSubmit = async (dto: LoginDto) => {
-    authService.login(dto).then(() => {
+    await authService.login(dto).then(() => {
       navigate(AppRoutes.movies);
     });
   };
@@ -52,7 +52,7 @@ export default function LoginForm() {
 
       <div className="bottom-links">
         <Link to={AppRoutes.register}>Don't have an account?</Link>
-        <Link to={AppRoutes.passwordReset}>Forgot password?</Link>
+        <Link to={AppRoutes.requestChangePassword}>Forgot password?</Link>
       </div>
     </form>
   );

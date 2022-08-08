@@ -1,11 +1,4 @@
-import axios from "axios";
-import store from "../../../../lib/store/store";
 import { AuthStore } from "../../data/dto/AuthStore";
-import { RefreshTokenDto } from "../../data/dto/refresh-token.dto";
-import { sliceStore } from "../slice";
-import { initialState } from "../slice/initialState";
-import { APIEndpoints, AuthService } from "./auth.service";
-import { baseURL } from "./axios.interceptor";
 
 export class JWTService {
   public decodeToken(token: string): any {
@@ -21,11 +14,6 @@ export class JWTService {
     const now = new Date().getTime() / 1000;
     return user.exp < now;
   }
-
- 
-
-
-
-
-
 }
+
+export const jwtService = new JWTService();

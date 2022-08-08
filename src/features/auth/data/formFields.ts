@@ -1,6 +1,9 @@
 import * as yup from "yup";
 import { FormField } from "../../../lib/hooks/useHookForm";
-import { ChangePasswordDto } from "./dto/change-password.dto";
+import {
+  ChangePasswordDto,
+  ReqChangePasswordDTO,
+} from "./dto/change-password.dto";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 
@@ -53,6 +56,19 @@ export const loginFields: FormField<LoginDto>[] = [
     placeholder: "Type 8 digit passcode",
     validation: () =>
       yup.string().min(8, "Must be 8 digit long").required("Required"),
+  },
+];
+export const requestChangePassFields: FormField<ReqChangePasswordDTO>[] = [
+  {
+    name: "email",
+    label: "Email",
+    placeholder: "Type your email",
+    type: "email",
+    validation: () =>
+      yup
+        .string()
+        .email(`Doesn't look like an email address >_<`)
+        .required(`Email is required >_<`),
   },
 ];
 export const passResetFields: FormField<ChangePasswordDto>[] = [

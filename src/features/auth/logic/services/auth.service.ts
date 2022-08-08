@@ -1,14 +1,16 @@
 import axios from "axios";
-import { Router } from "react-router-dom";
 import store from "../../../../lib/store/store";
 import { AuthStore } from "../../data/dto/AuthStore";
-import { ChangePasswordDto } from "../../data/dto/change-password.dto";
+import {
+  ChangePasswordDto,
+  ReqChangePasswordDTO,
+} from "../../data/dto/change-password.dto";
 import { LoginDto } from "../../data/dto/login.dto";
 import { RefreshTokenDto } from "../../data/dto/refresh-token.dto";
 import { sliceStore } from "../slice";
 import { initialState } from "../slice/initialState";
 import httpService from "./axios.interceptor";
-import { JWTService } from "./jwt.service";
+import { jwtService } from "./jwt.service";
 
 export enum APIEndpoints {
   login = "/auth/login",
@@ -16,13 +18,12 @@ export enum APIEndpoints {
   refreshToken = "/auth/refresh-token",
   logout = "/auth/logout",
   test = "/auth/test",
+  requestChangePassword = "/auth/request-change-password",
   changePassword = "/auth/change-password",
 }
 
 export class AuthService {
   constructor() {}
-
-  private readonly jwt = new JWTService();
 
   public async login(dto: LoginDto) {
     const response = await httpService.post(APIEndpoints.login, dto);
@@ -59,6 +60,14 @@ export class AuthService {
   public async updatePassword(dto: ChangePasswordDto) {
     await httpService.post(APIEndpoints.changePassword, dto);
   }
+  public async requestChangePass(dto: ReqChangePasswordDTO) {
+    try {
+      let res = await httpService.post(APIEndpoints.requestChangePassword, dto);
+      if (res) {
+        return res.data;
+      }
+    } catch (e) {}
+  }
   public getSession(): AuthStore.session | null {
     return store.getState().auth.session;
   }
@@ -68,7 +77,7 @@ export class AuthService {
   public updateSession(
     session: AuthStore.State[AuthStore.Enum.session]
   ): AuthStore.User {
-    const user: AuthStore.User = this.jwt.decodeToken(session!.accessToken);
+    const user: AuthStore.User = jwtService.decodeToken(session!.accessToken);
     store.dispatch(
       sliceStore.actions.setCredentials({
         user,
