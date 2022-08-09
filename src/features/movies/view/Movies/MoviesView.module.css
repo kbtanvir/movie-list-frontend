@@ -1,31 +1,43 @@
 .moviesWrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  gap: 30px;
 }
 
 .card {
   height: 400px;
-  padding: 40px;
+  padding: 30px;
   border-radius: 10px;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.489);
-  background-blend-mode: color;
+  background-color: transparent;
+  background-blend-mode: multiply;
   background-size: cover;
   transition: 0.3s ease-in-out;
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
   gap: 20px;
   color: white;
+  position: relative;
+}
+
+.card:hover {
+  transform: scale(1.1);
+  background-color: rgba(0, 0, 0, 0.612);
+  z-index: 1;
+}
+.onCardHover {
+  opacity: 0;
+  visibility: none;
+  transition: 0.3s ease-in-out;
+}
+.card:hover .onCardHover {
+  opacity: 1;
+  visibility: visible;
 }
 .cardHead {
   display: grid;
-  grid-template-rows: 3fr 1fr;
+  align-items: flex-start;
   gap: 20px;
-}
-.card:hover {
-  transform: scale(1.1);
-  background-color: rgba(0, 0, 0, 0.787);
 }
 .pageTitle {
   color: white;
@@ -47,15 +59,15 @@
   margin: 0;
 }
 .duration {
-  font-size: 20px;
+  /* font-size: 20px; */
 }
 
 .button {
-  max-width: 200px;
-  background-color: rgb(221, 0, 0);
-  border-radius: 10px;
+  max-width: fit-content;
+  background-color: white;
+  border-radius: 4px;
   border: 0;
-  padding: 15px;
+  padding: 8px 15px;
   text-transform: uppercase;
   transition: 0.3s ease-in-out;
   cursor: pointer;
@@ -63,19 +75,54 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  color: white;
+  color: red;
 }
 .button:hover {
-  background-color: rgb(255, 255, 255);
-  color: rgb(0, 0, 0);
+  background-color: red;
+  color: white;
 }
 
 .playIcon {
   width: 20px;
   height: 20px;
-  fill: white;
+  fill: red;
   transition: 0.3s ease-in-out;
 }
 .button:hover .playIcon {
-  fill: rgb(0, 0, 0);
+  fill: white;
+}
+
+.ratingWrap {
+  display: flex;
+  align-items: center;
+  max-width: fit-content;
+  gap: 4px;
+  padding: 0 10px;
+  border: 1px solid red;
+  border-radius: 3px;
+  top: 10px;
+  left: 10px;
+  background-color: red;
+}
+.ratingStar {
+  font-size: 14px;
+  fill: white;
+  transition: 0.3s ease-in-out;
+}
+.tagsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.tagsWrap .tag {
+  border-radius: 4px;
+  border: 0;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 15px;
+  text-transform: uppercase;
+  transition: 0.3s ease-in-out;
+  cursor: pointer;
+  color: white;
+  border: 1px solid red;
 }

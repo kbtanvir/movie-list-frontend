@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { AiFillStar } from "react-icons/ai";
+import { BsFillPlayFill } from "react-icons/bs";
 import { notify } from "../../../../lib/utils/helper";
 import { useGetAllMoviesQuery } from "../../logic/slice";
 import { MovieEntity } from "../../models/MovieEntity";
@@ -16,19 +17,10 @@ export default function MoviesView() {
 function MovieList() {
   const { data, error, isLoading } = useGetAllMoviesQuery();
 
-  useEffect(() => {
-    if (error) {
-      // notify({
-      //   message: error.data.message,
-      //   type: "error",
-      // });
-      console.log(error);
-    }
-  }, [error]);
-
   if (isLoading) {
     return (
       <div
+        className={styles.pageTitle}
         onLoad={() => {
           notify({
             message: "Loading movies...",
@@ -42,12 +34,12 @@ function MovieList() {
   }
 
   if (error) {
-    return <div>Error!</div>;
+    return <div className={styles.moviesWrapper}>Error!</div>;
   }
 
   return (
     <div className={styles.moviesWrapper}>
-      {[...(data as MovieEntity[])].map((item, i) => (
+      {(data as MovieEntity[]).map((item, i) => (
         <MovieCard item={item} key={i} />
       ))}
     </div>
@@ -55,6 +47,9 @@ function MovieList() {
 }
 
 function MovieCard({ item }: { item: MovieEntity }) {
+  const hoverVisible = (className: string) =>
+    `${styles.onCardHover} ${className}`;
+
   return (
     <div
       className={styles.card}
@@ -66,24 +61,28 @@ function MovieCard({ item }: { item: MovieEntity }) {
       }}
     >
       <div className={styles.cardHead}>
-        <div className={styles.movieName}>{item.name}</div>
-        <div className={styles.duration}>{item.duration}</div>
-      </div>
-      <div className={styles.gridItem}></div>
-      <div className={styles.gridItem}></div>
-      <div className={styles.gridItem}>
-        <div className={styles.pro}>
-          {item.productionCompanies.map((item, i) => (
-            <div className={styles.Tags}>{item}</div>
+        <div className={styles.ratingWrap}>
+          <AiFillStar className={styles.ratingStar} /> {item.rating}
+        </div>
+        <div className={hoverVisible(styles.movieName)}>{item.name}</div>
+        <div className={hoverVisible(styles.duration)}>
+          Duration: {item.duration}
+        </div>
+        <div className={hoverVisible(styles.tagsWrap)}>
+          {item.genres.map((item, i) => (
+            <div className={styles.tag} key={i}>
+              {item}
+            </div>
           ))}
         </div>
-
-        <div className={styles.pro}>{item.rating}</div>
       </div>
-      {/* <button className={styles.button}>
+      <div className={styles.gridItem}></div>
+      <div className={styles.gridItem}></div>
+      <div className={hoverVisible(styles.cardFooter)}></div>
+      <button className={hoverVisible(styles.button)}>
         <BsFillPlayFill className={styles.playIcon} />
         Play now
-      </button> */}
+      </button>
     </div>
   );
 }
