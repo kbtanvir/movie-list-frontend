@@ -1,4 +1,8 @@
+import { useEffect } from "react";
 import { BsFillPlayFill } from "react-icons/bs";
+import { notify } from "../../../../lib/utils/helper";
+import { useGetAllMoviesQuery } from "../../logic/slice";
+import { MovieEntity } from "../../models/MovieEntity";
 import styles from "./MoviesView.module.css";
 
 export default function MoviesView() {
@@ -11,25 +15,58 @@ export default function MoviesView() {
 }
 
 function MovieList() {
+  const { data, error, isLoading } = useGetAllMoviesQuery();
+
+  useEffect(() => {
+    if (error) {
+      notify({
+        message: error.data.message,
+        type: "error",
+      });
+    }
+  }, [error]);
+
+  if (isLoading) {
+    return (
+      <div
+        onLoad={() => {
+          notify({
+            message: "Loading movies...",
+            type: "info",
+          });
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error!</div>;
+  }
+
   return (
     <div className={styles.moviesWrapper}>
-      {[...Array(10).keys()].map((_, i) => (
-        <MovieCard key={i} />
+      {[...(data as MovieEntity[])].map((item, i) => (
+        <MovieCard item={item} key={i} />
       ))}
     </div>
   );
 }
 
-function MovieCard() {
+function MovieCard({ item }: { item: MovieEntity }) {
   return (
     <div
       className={styles.card}
       style={{
-        backgroundImage: `url("https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60")`,
+        backgroundImage: `url(${
+          item.image ||
+          "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60"
+        })`,
       }}
     >
-      <div className={styles.title}>Movie title</div>
-      <div className={styles.duration}>1hr : 45mins</div>
+      <div className={styles.title}>{item.name}</div>
+      <div className={styles.duration}>{item.duration}</div>
       <button className={styles.button}>
         <BsFillPlayFill className={styles.playIcon} />
         Play now
