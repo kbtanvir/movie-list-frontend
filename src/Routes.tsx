@@ -9,14 +9,14 @@ import {
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { sliceStore } from "./features/auth/logic/slice";
-import FormPasswordPreset from "./features/auth/view/forms/ChangePasswordForm";
-import LoginForm from "./features/auth/view/forms/LoginForm";
-import RegistrationForm from "./features/auth/view/forms/RegistrationForm";
-import RequestChangePassForm from "./features/auth/view/forms/RequestChangePassForm";
+import FormPasswordPreset from "./features/auth/view/forms/ChangePasswordPage/ChangePasswordPage";
+import LoginForm from "./features/auth/view/forms/LoginPage/LoginPage";
+import RegistrationForm from "./features/auth/view/forms/RegistrationPage/RegistrationPage";
+import RequestChangePassForm from "./features/auth/view/forms/RequestChangePassPage/RequestChangePassPage";
 import MoviesView from "./features/movies/view/Movies/MoviesView";
 import "./global.css";
 import { AppRoutes } from "./lib/consts/appRoutes";
-import HeaderLayout from "./lib/layouts/Header";
+import HeaderLayout from "./lib/layouts/Header/HeaderLayout";
 export default function App() {
   return (
     <>

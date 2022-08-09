@@ -1,16 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { RootState } from '../../../../lib/store/store'
-import { initialState } from './initialState'
-import { reducers } from './sliceReducers'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { MovieEntity } from "../../models/MovieEntity";
 
-const sliceName = 'auth'
-export const slice = createSlice({
-  name: sliceName,
-  initialState,
-  reducers,
-})
-export const authActions = slice.actions
+// Define a service using a base URL and expected endpoints
+export const moviesAPI = createApi({
+  reducerPath: "moviesAPI",
+  baseQuery: fetchBaseQuery({ baseUrl: "https://pokeapi.co/api/v2/" }),
+  endpoints: builder => ({
+    getMovieByID: builder.query<MovieEntity, string>({
+      query: id => `pokemon/${id}`,
+    }),
+    getAllMovies: builder.query<MovieEntity[], void>({
+      query: () => "movies",
+    }),
+  }),
+});
 
-export const authSelector = (state: RootState) => state[sliceName]
-
-export default slice.reducer
+// Export hooks for usage in functional components, which are
+// auto-generated based on the defined endpoints
+// export const { useGetMovieByIDQuery, useGetAllMoviesQuery } = moviesAPI;

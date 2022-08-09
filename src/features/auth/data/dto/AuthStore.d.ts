@@ -22,7 +22,11 @@ export namespace AuthStore {
     accessToken: string;
     refreshToken: string;
   }
-  export type User = JwtPayload;
+  export type User = JwtPayload & {
+    firstName: string;
+    lastName: string;
+    email: string;
+  }
 
   export interface State {
     [Enum.user]: User | null;

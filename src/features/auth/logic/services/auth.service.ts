@@ -53,8 +53,8 @@ export class AuthService {
       throw error;
     }
   }
-  public async logout(dto: RefreshTokenDto) {
-    await httpService.post(APIEndpoints.logout, dto);
+  public async logout() {
+    await httpService.post(APIEndpoints.logout);
     this.clearSession();
   }
   public async updatePassword(dto: ChangePasswordDto) {

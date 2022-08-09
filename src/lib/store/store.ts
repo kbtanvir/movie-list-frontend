@@ -1,5 +1,6 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import { sliceStore } from "../../features/auth/logic/slice";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import { moviesAPI } from "./../../features/movies/logic/slice/index";
 import { reducer } from "./store.reducer";
 
 const preloadedState = () => {
@@ -22,7 +23,7 @@ const store = configureStore({
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    }).concat(moviesAPI.middleware),
   preloadedState: preloadedState(),
 });
 
@@ -45,3 +46,5 @@ store.subscribe(() => {
 
   window.localStorage.setItem("state", JSON.stringify(persist));
 });
+
+setupListeners(store.dispatch);
