@@ -1,7 +1,7 @@
 import axios from "axios";
 import { notify } from "../../../../lib/utils/helper";
-import { AuthService } from "./auth.service";
-import { JWTService } from "./jwt.service";
+import { authService, AuthService } from "./auth.service";
+import { jwtService, JWTService } from "./jwt.service";
 
 // * CREATE AXIOS INSTANCE
 // * ---------------------
@@ -22,8 +22,6 @@ const httpService = axios.create({
 
 httpService.interceptors.request.use(
   async req => {
-    const jwtService = new JWTService();
-    const authService = new AuthService();
     const session = authService.getSession();
 
     // ? DOES SESSION EXIST
@@ -83,7 +81,7 @@ httpService.interceptors.response.use(
     return response;
   },
   error => {
-    console.log(error.response.data);
+    // console.log(error.response.data);
     notify({
       message: error.response.data.message,
       type: "error",

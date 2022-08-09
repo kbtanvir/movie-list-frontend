@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { BsFillPlayFill } from "react-icons/bs";
 import { notify } from "../../../../lib/utils/helper";
 import { useGetAllMoviesQuery } from "../../logic/slice";
 import { MovieEntity } from "../../models/MovieEntity";
@@ -19,10 +18,11 @@ function MovieList() {
 
   useEffect(() => {
     if (error) {
-      notify({
-        message: error.data.message,
-        type: "error",
-      });
+      // notify({
+      //   message: error.data.message,
+      //   type: "error",
+      // });
+      console.log(error);
     }
   }, [error]);
 
@@ -65,12 +65,25 @@ function MovieCard({ item }: { item: MovieEntity }) {
         })`,
       }}
     >
-      <div className={styles.title}>{item.name}</div>
-      <div className={styles.duration}>{item.duration}</div>
-      <button className={styles.button}>
+      <div className={styles.cardHead}>
+        <div className={styles.movieName}>{item.name}</div>
+        <div className={styles.duration}>{item.duration}</div>
+      </div>
+      <div className={styles.gridItem}></div>
+      <div className={styles.gridItem}></div>
+      <div className={styles.gridItem}>
+        <div className={styles.pro}>
+          {item.productionCompanies.map((item, i) => (
+            <div className={styles.Tags}>{item}</div>
+          ))}
+        </div>
+
+        <div className={styles.pro}>{item.rating}</div>
+      </div>
+      {/* <button className={styles.button}>
         <BsFillPlayFill className={styles.playIcon} />
         Play now
-      </button>
+      </button> */}
     </div>
   );
 }
