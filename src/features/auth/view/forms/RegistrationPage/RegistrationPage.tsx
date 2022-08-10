@@ -51,7 +51,7 @@ export default function RegistrationForm() {
       <Button text="Continue" />
       <div className="bottom-links">
         <Link to={AppRoutes.login}>Already have an account?</Link>
-        <Link to={AppRoutes.passwordReset}>Forgot password?</Link>
+        <Link to={AppRoutes.requestChangePassword}>Forgot password?</Link>
       </div>
     </form>
   );
